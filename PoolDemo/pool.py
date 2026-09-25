@@ -79,10 +79,10 @@ class Pool:
         if exchanged > 0:
             # Water (and its chemical load) swaps between zones.
             feed_out = exchanged * self.feed_concentration
-            bulk_out = exchanged * self.rest_concentration
+            rest_out = exchanged * self.rest_concentration
 
-            self.feed_concentration += (bulk_out - feed_out) / self.feed_gallons
-            self.rest_concentration += (feed_out - bulk_out) / self.rest_gallons
+            self.feed_concentration += (rest_out - feed_out) / self.feed_gallons
+            self.rest_concentration += (feed_out - rest_out) / self.rest_gallons
         # If exchanged == 0 (no true flow), zones do NOT mix -- this is the
         # condition where dosing the feed pocket stops ever reaching the
         # pool, and the sensor (reading rest_concentrate only) has no way to see
@@ -95,15 +95,15 @@ class Pool:
         return {
             "pump_running": self.pump_running,
             "true_flow_gpm": self.true_flow_gpm,
-            "feed_conc": self.feed_concentration,
-            "bulk_conc": self.rest_concentration,
+            "feed_concentration": self.feed_concentration,
+            "rest_concentration": self.rest_concentration,
         }
 
     def __repr__(self):
         return (
             f"Pool({self.name!r}, gal={self.gallons}, target_gpm={self.target_gpm:.1f}, "
-            f"pump_running={self.pump_running}, feed_conc={self.feed_concentration:.3f}, "
-            f"bulk_conc={self.rest_concentration:.3f})"
+            f"pump_running={self.pump_running}, feed_concentration={self.feed_concentration:.3f}, "
+            f"rest_concentration={self.rest_concentration:.3f})"
         )
 
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         if minute % 10 == 9:
             print(f"t={minute + 1:>2} min:", pool)
 
-    print("\nWith the pump truly off, feed_conc keeps climbing from dosing")
-    print("while bulk_conc (what the sensor actually reads) just decays")
+    print("\nWith the pump truly off, feed_concentration keeps climbing from dosing")
+    print("while rest_concentration (what the sensor actually reads) just decays")
     print("normally -- the sensor has no visibility into the feed pocket,")
     print("so nothing about the sensor reading looks anomalous at all.")

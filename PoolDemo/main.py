@@ -55,22 +55,22 @@ def run_scenario():
     # The over-dosed slug in the feed pocket now mixes into the real pool.
     print("=== Phase 2: true flow restored, reporting goes back to honest ===")
     pool.set_pump_state(running=True)
-    peak_bulk = pool.rest_concentration
+    peak_rest = pool.rest_concentration
     for minute in range(1440, 1500):
         reported_flow = pool.true_flow_gpm  # honest now
         dose = controller.decide_dose(minute, reported_flow, pool.sensor_reading())
         pool.dose(dose)
         pool.step(minutes=1)
-        peak_bulk = max(peak_bulk, pool.rest_concentration)
+        peak_rest = max(peak_rest, pool.rest_concentration)
         if minute % 10 == 9:
             print(
-                f"t={minute + 1:>3} min | dose={dose:.2f} ppm-gal | "
-                f"sensor(rest)={pool.sensor_reading():.3f} | feed={pool.feed_concentration:.3f}"
+                f"t={minute + 1} min | dose={dose} ppm-gal | "
+                f"sensor(rest)={pool.sensor_reading()} | feed={pool.feed_concentration}"
             )
 
-    print(f"\nEnd of Phase 2: sensor(rest)={pool.sensor_reading():.3f}, feed={pool.rest_concentration:.3f}")
-    print(f"Peak rest concentration during release: {peak_bulk:.3f}")
-    print(f"Total chemical dosed while truly unflowed: {controller.total_dosed:.2f} ppm-gal")
+    print(f"\nEnd of Phase 2: sensor(rest)={pool.sensor_reading()}, feed={pool.rest_concentration}")
+    print(f"Peak rest concentration during release: {peak_rest}")
+    print(f"Total chemical dosed while truly unflowed: {controller.total_dosed} ppm-gal")
 
 
 if __name__ == "__main__":
